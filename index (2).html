@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Suryansh Sureka | BBA Graduate & MBA Aspirant</title>
+    <meta name="description" content="Portfolio of Suryansh Sureka — BBA Graduate from Christ University Delhi NCR. Aspiring Data & Business Analyst. MBA Aspirant.">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Three.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <style>
+        *, *::before, *::after { box-sizing: border-box; }
+
+        :root {
+            --accent: #C8A96E;
+            --accent-dim: #a8895a;
+            --accent-glow: rgba(200, 169, 110, 0.15);
+            --bg: #050505;
+            --bg-card: rgba(20, 20, 20, 0.6);
+            --bg-card-solid: #141414;
+            --border: rgba(255,255,255,0.07);
+            --text: #F0EDE8;
+            --muted: #888;
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            margin: 0; padding: 0;
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #0a0a0a; }
+        ::-webkit-scrollbar-thumb { background: var(--accent-dim); border-radius: 3px; }
+
+        /* Scroll progress bar */
+        #scroll-progress {
+            position: fixed; top: 0; left: 0; height: 2px;
+            background: var(--accent); width: 0%;
+            z-index: 9999; transition: width 0.1s linear;
+        }
+
+        /* Canvas */
+        #canvas-container {
+            position: fixed; inset: 0;
+            z-index: -1; opacity: 0.5;
+        }
+
+        /* Glass */
+        .glass {
+            background: var(--bg-card);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid var(--border);
+        }
+
+        /* Nav */
+        nav {
+            position: fixed; top: 0; left: 0; right: 0;
+            z-index: 1000; padding: 0 5%;
+            height: 68px; display: flex; align-items: center;
+            justify-content: space-between;
+            transition: all 0.4s ease;
+        }
+        nav.scrolled {
+            background: rgba(5,5,5,0.92);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+        }
+        .nav-logo {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.2rem; font-weight: 700;
+            color: var(--text); text-decoration: none;
+            letter-spacing: -0.02em;
+        }
+        .nav-logo span { color: var(--accent); }
+        .nav-links { display: flex; gap: 28px; align-items: center; list-style: none; margin: 0; padding: 0; }
+        .nav-links a {
+            color: var(--muted); text-decoration: none;
+            font-size: 0.85rem; font-weight: 500;
+            letter-spacing: 0.03em; transition: color 0.2s;
+        }
+        .nav-links a:hover { color: var(--text); }
+        .nav-cta {
+            padding: 7px 18px; border-radius: 5px;
+            border: 1px solid var(--accent) !important;
+            color: var(--accent) !important;
+            transition: all 0.2s !important;
+        }
+        .nav-cta:hover { background: var(--accent) !important; color: #000 !important; }
+
+        /* Hero */
+        #hero {
+            min-height: 100vh; display: flex; align-items: center;
+            justify-content: center; text-align: center;
+            padding: 120px 5% 80px; position: relative;
+        }
+        .hero-inner { max-width: 780px; }
+        .hero-badge {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 6px 16px; border-radius: 20px; margin-bottom: 24px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.78rem; color: var(--accent);
+            border: 1px solid rgba(200,169,110,0.3);
+            background: rgba(200,169,110,0.06);
+        }
+        .hero-badge .dot {
+            width: 6px; height: 6px; border-radius: 50%;
+            background: var(--accent); animation: pulse 2s infinite;
+        }
+        @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(1.3)} }
+
+        h1.hero-name {
+            font-size: clamp(3rem, 8vw, 6.5rem);
+            font-weight: 800; letter-spacing: -0.04em;
+            line-height: 1.0; margin: 0 0 6px;
+            color: var(--text);
+        }
+        h1.hero-name .outline {
+            -webkit-text-stroke: 1px rgba(240,237,232,0.35);
+            color: transparent;
+        }
+        .hero-typed-wrap {
+            height: 44px; display: flex;
+            align-items: center; justify-content: center;
+            margin-bottom: 20px;
+        }
+        #typed-text {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(1rem, 2.5vw, 1.35rem);
+            color: var(--accent); letter-spacing: -0.01em;
+        }
+        .cursor { animation: blink 1s step-end infinite; color: var(--accent); }
+        @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+        .hero-sub {
+            font-size: clamp(0.95rem, 1.8vw, 1.1rem);
+            color: var(--muted); max-width: 520px;
+            margin: 0 auto 40px; line-height: 1.8;
+        }
+        .hero-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-bottom: 48px; }
+        .btn-primary {
+            padding: 12px 26px; background: var(--accent); color: #000;
+            border-radius: 5px; font-weight: 700; font-size: 0.85rem;
+            text-decoration: none; letter-spacing: 0.05em;
+            transition: opacity 0.2s;
+        }
+        .btn-primary:hover { opacity: 0.85; }
+        .btn-outline {
+            padding: 12px 26px; background: transparent; color: var(--text);
+            border-radius: 5px; font-weight: 500; font-size: 0.85rem;
+            text-decoration: none; letter-spacing: 0.05em;
+            border: 1px solid rgba(255,255,255,0.12);
+            transition: border-color 0.2s;
+        }
+        .btn-outline:hover { border-color: rgba(200,169,110,0.5); }
+        .hero-socials { display: flex; gap: 22px; justify-content: center; align-items: center; }
+        .hero-socials a {
+            font-size: 0.78rem; color: var(--muted); text-decoration: none;
+            letter-spacing: 0.1em; text-transform: uppercase;
+            transition: color 0.2s;
+        }
+        .hero-socials a:hover { color: var(--accent); }
+
+        /* Profile Image */
+        .profile-float {
+            position: absolute; right: 5%;
+            top: 50%; transform: translateY(-50%);
+            width: 220px;
+        }
+        .profile-float img {
+            width: 180px; height: 180px; border-radius: 50%;
+            object-fit: cover; object-position: center top;
+            border: 2px solid rgba(200,169,110,0.4);
+            display: block; margin: 0 auto;
+        }
+        .profile-float .profile-placeholder {
+            width: 180px; height: 180px; border-radius: 50%;
+            border: 2px solid rgba(200,169,110,0.3);
+            background: var(--bg-card-solid);
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            margin: 0 auto; gap: 6px;
+        }
+        .profile-float .profile-placeholder span:first-child {
+            font-family: 'JetBrains Mono', serif;
+            font-size: 2rem; font-weight: 700; color: var(--accent);
+        }
+        .profile-float .profile-placeholder span:last-child {
+            font-size: 0.65rem; color: #444; letter-spacing: 0.08em; text-transform: uppercase;
+        }
+
+        /* Stats Strip */
+        #stats {
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            padding: 44px 5%;
+        }
+        .stats-grid {
+            max-width: 900px; margin: 0 auto;
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 24px; text-align: center;
+        }
+        .stat-val {
+            font-size: 2.2rem; font-weight: 800;
+            color: var(--accent); font-family: 'JetBrains Mono', monospace;
+            letter-spacing: -0.02em; display: block;
+        }
+        .stat-label { font-size: 0.75rem; color: var(--muted); margin-top: 4px; letter-spacing: 0.04em; }
+
+        /* Section wrapper */
+        .section-wrap {
+            max-width: 1050px; margin: 0 auto;
+            padding: 90px 5%;
+        }
+        .section-label {
+            display: flex; align-items: center; gap: 10px;
+            margin-bottom: 10px;
+        }
+        .section-label::before {
+            content: ''; display: block;
+            width: 24px; height: 1px; background: var(--accent);
+        }
+        .section-label span {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.68rem; letter-spacing: 0.2em;
+            text-transform: uppercase; color: var(--accent);
+        }
+        .section-title {
+            font-size: clamp(1.8rem, 4vw, 3rem);
+            font-weight: 800; letter-spacing: -0.03em;
+            line-height: 1.1; margin: 0 0 48px;
+            color: var(--text);
+        }
+        section + section { border-top: 1px solid var(--border); }
+
+        /* Reveal on scroll */
+        .reveal { opacity: 0; transform: translateY(24px); transition: all 0.7s ease; }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+
+        /* About */
+        .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: start; }
+        .about-text p { font-size: 0.97rem; color: var(--muted); line-height: 1.9; margin-bottom: 16px; }
+        .about-text p strong { color: var(--text); font-weight: 600; }
+        .about-table { display: flex; flex-direction: column; gap: 0; }
+        .about-row {
+            display: flex; justify-content: space-between; align-items: flex-start;
+            padding: 14px 0; border-bottom: 1px solid var(--border);
+            gap: 16px;
+        }
+        .about-row:last-child { border-bottom: none; }
+        .about-row .key { font-size: 0.72rem; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; min-width: 100px; }
+        .about-row .val { font-size: 0.88rem; color: var(--text); text-align: right; }
+
+        /* Skills */
+        .skills-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 20px; }
+        .skill-card {
+            padding: 22px 22px 18px;
+            border-radius: 8px; border: 1px solid var(--border);
+            background: rgba(20,20,20,0.5);
+            backdrop-filter: blur(10px);
+            transition: border-color 0.3s;
+        }
+        .skill-card:hover { border-color: rgba(200,169,110,0.3); }
+        .skill-card-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.68rem; letter-spacing: 0.15em; text-transform: uppercase;
+            color: var(--accent); margin-bottom: 18px;
+        }
+        .skill-item { margin-bottom: 14px; }
+        .skill-item-header { display: flex; justify-content: space-between; margin-bottom: 5px; }
+        .skill-item-name { font-size: 0.82rem; color: var(--text); }
+        .skill-item-pct { font-size: 0.75rem; color: var(--accent); font-family: 'JetBrains Mono', monospace; }
+        .skill-bar-track { height: 3px; background: #222; border-radius: 2px; overflow: hidden; }
+        .skill-bar-fill { height: 100%; border-radius: 2px; background: linear-gradient(90deg, var(--accent), var(--accent-dim)); width: 0; transition: width 1.3s cubic-bezier(.4,0,.2,1); }
+
+        /* Experience */
+        .exp-item {
+            display: grid; grid-template-columns: 180px 1fr;
+            gap: 40px; padding: 28px 0;
+            border-top: 1px solid var(--border);
+        }
+        .exp-meta {}
+        .exp-type { font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); display: block; margin-bottom: 6px; }
+        .exp-org { font-size: 0.78rem; color: var(--muted); }
+        .exp-period { display: inline-block; margin-top: 10px; font-size: 0.72rem; font-family: 'JetBrains Mono', monospace; color: rgba(200,169,110,0.6); background: rgba(20,20,20,0.8); padding: 3px 10px; border-radius: 20px; border: 1px solid var(--border); }
+        .exp-role { font-size: 1.25rem; font-weight: 700; color: var(--text); margin: 0 0 4px; }
+        .exp-company { font-size: 0.82rem; color: var(--accent-dim); margin-bottom: 16px; letter-spacing: 0.04em; }
+        .exp-points { list-style: none; padding: 0; margin: 0; }
+        .exp-points li { display: flex; gap: 10px; margin-bottom: 9px; font-size: 0.88rem; color: var(--muted); line-height: 1.7; }
+        .exp-points li::before { content: '—'; color: var(--accent); flex-shrink: 0; margin-top: 2px; }
+
+        /* Projects */
+        .projects-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap: 18px; }
+        .project-card {
+            padding: 24px 24px 20px; border-radius: 8px;
+            border: 1px solid var(--border);
+            background: rgba(20,20,20,0.5);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease; position: relative; overflow: hidden;
+        }
+        .project-card:hover { border-color: rgba(200,169,110,0.35); transform: translateY(-3px); }
+        .project-card.featured::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+            background: linear-gradient(90deg, var(--accent), transparent);
+        }
+        .project-type { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); margin-bottom: 10px; }
+        .project-title { font-size: 1rem; font-weight: 700; color: var(--text); margin: 0 0 4px; line-height: 1.3; }
+        .project-sub { font-size: 0.76rem; color: var(--accent-dim); margin-bottom: 10px; letter-spacing: 0.04em; }
+        .project-desc { font-size: 0.85rem; color: var(--muted); line-height: 1.75; margin-bottom: 16px; }
+        .tags { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 16px; }
+        .tag { font-size: 0.68rem; padding: 3px 9px; border: 1px solid var(--border); border-radius: 3px; color: var(--muted); letter-spacing: 0.06em; text-transform: uppercase; }
+        .project-btn { font-size: 0.78rem; color: var(--muted); background: none; border: 1px solid var(--border); border-radius: 4px; padding: 7px 14px; cursor: pointer; transition: all 0.2s; }
+        .project-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+        /* Achievements */
+        .ach-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 18px; }
+        .ach-card { padding: 24px 22px; border-radius: 8px; border: 1px solid var(--border); background: rgba(20,20,20,0.5); }
+        .ach-icon { font-size: 1.8rem; margin-bottom: 14px; }
+        .ach-title { font-size: 0.95rem; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+        .ach-desc { font-size: 0.84rem; color: var(--muted); line-height: 1.75; }
+
+        /* Leadership */
+        .lead-item { display: grid; grid-template-columns: 1fr 2fr; gap: 40px; padding: 24px 0; border-top: 1px solid var(--border); }
+        .lead-role { font-size: 1rem; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+        .lead-org { font-size: 0.78rem; color: var(--accent-dim); margin-bottom: 12px; letter-spacing: 0.04em; }
+        .lead-desc { font-size: 0.88rem; color: var(--muted); line-height: 1.8; }
+
+        /* Contact */
+        .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: start; }
+        .contact-info p { font-size: 0.95rem; color: var(--muted); line-height: 1.9; margin-bottom: 28px; }
+        .contact-links { display: flex; flex-direction: column; gap: 14px; }
+        .contact-link-row { display: flex; gap: 14px; align-items: center; }
+        .contact-link-key { font-size: 0.7rem; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; min-width: 55px; }
+        .contact-link-val { font-size: 0.88rem; color: var(--accent); text-decoration: none; }
+        .contact-link-val:hover { text-decoration: underline; }
+        .contact-form { display: flex; flex-direction: column; gap: 12px; }
+        .contact-form input, .contact-form textarea {
+            background: rgba(20,20,20,0.8); border: 1px solid var(--border);
+            border-radius: 5px; padding: 11px 14px; font-size: 0.88rem;
+            color: var(--text); outline: none;
+            font-family: 'Inter', sans-serif;
+            transition: border-color 0.2s;
+        }
+        .contact-form input:focus, .contact-form textarea:focus { border-color: rgba(200,169,110,0.5); }
+        .contact-form textarea { resize: vertical; line-height: 1.7; }
+        .contact-form button {
+            padding: 12px 24px; background: var(--accent); color: #000;
+            border: none; border-radius: 5px; font-size: 0.85rem; font-weight: 700;
+            cursor: pointer; letter-spacing: 0.05em; transition: opacity 0.2s;
+            align-self: flex-start; font-family: 'Inter', sans-serif;
+        }
+        .contact-form button:hover { opacity: 0.85; }
+        .sent-state { display: none; flex-direction: column; align-items: center; justify-content: center; gap: 10px; text-align: center; padding: 40px 0; }
+        .sent-state .check { font-size: 2rem; color: var(--accent); }
+        .sent-state p { font-size: 1rem; color: var(--text); }
+
+        /* Socials row */
+        .social-row { display: flex; gap: 20px; margin-top: 24px; }
+        .social-row a { color: var(--muted); font-size: 1.2rem; transition: color 0.2s; }
+        .social-row a:hover { color: var(--accent); }
+
+        /* Footer */
+        footer {
+            border-top: 1px solid var(--border); padding: 28px 5%;
+            display: flex; justify-content: space-between; align-items: center;
+            font-size: 0.78rem; color: #333; max-width: 1050px;
+            margin: 0 auto;
+        }
+        footer span { color: #333; }
+
+        /* Certifications */
+        .cert-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 14px; }
+        .cert-card {
+            padding: 18px 18px; border-radius: 6px;
+            border: 1px dashed var(--border); opacity: 0.55;
+        }
+        .cert-label { font-family: 'JetBrains Mono', monospace; font-size: 0.62rem; color: var(--accent); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 6px; }
+        .cert-name { font-size: 0.88rem; color: var(--text); }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .about-grid { grid-template-columns: 1fr; gap: 32px; }
+            .contact-grid { grid-template-columns: 1fr; gap: 32px; }
+            .exp-item { grid-template-columns: 1fr; gap: 10px; }
+            .lead-item { grid-template-columns: 1fr; gap: 8px; }
+            .profile-float { display: none; }
+            h1.hero-name { text-align: center; }
+        }
+        @media (max-width: 640px) {
+            .nav-links { display: none; }
+            .hero-btns { flex-direction: column; align-items: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Scroll Progress -->
+    <div id="scroll-progress"></div>
+
+    <!-- Three.js Background -->
+    <div id="canvas-container"></div>
+
+    <!-- ── NAV ── -->
+    <nav id="navbar">
+        <a href="#" class="nav-logo"><span>&lt;</span>SS<span>/&gt;</span></a>
+        <ul class="nav-links">
+            <li><a href="#about">About</a></li>
+            <li><a href="#experience">Experience</a></li>
+            <li><a href="#projects">Projects</a></li>
+            <li><a href="#skills">Skills</a></li>
+            <li><a href="#leadership">Leadership</a></li>
+            <li><a href="#contact" class="nav-cta">Let's Connect</a></li>
+        </ul>
+    </nav>
+
+    <!-- ── HERO ── -->
+    <section id="hero">
+        <div class="hero-inner">
+            <div class="hero-badge">
+                <div class="dot"></div>
+                Open to internships &amp; opportunities
+            </div>
+
+            <h1 class="hero-name">Suryansh<br><span class="outline">Sureka</span></h1>
+
+            <div class="hero-typed-wrap">
+                <span id="typed-text"></span><span class="cursor">|</span>
+            </div>
+
+            <p class="hero-sub">
+                BBA Graduate from Christ University Delhi NCR — turning business problems into
+                data-backed decisions. Aspiring MBA candidate with a passion for analytics, strategy &amp; AI-driven innovation.
+            </p>
+
+            <div class="hero-btns">
+                <a href="#projects" class="btn-primary" onclick="smoothTo('projects'); return false;">View Projects</a>
+                <a href="#" class="btn-outline">Download Resume ↓</a>
+                <a href="#contact" class="btn-outline" onclick="smoothTo('contact'); return false;">Contact Me</a>
+            </div>
+
+            <div class="hero-socials">
+                <a href="https://linkedin.com/in/suryanshsureka" target="_blank">LinkedIn</a>
+                <a href="mailto:suryanshsureka@gmail.com">Email</a>
+                <a href="https://github.com/suryanshsureka" target="_blank">GitHub</a>
+            </div>
+        </div>
+
+        <!-- Profile pic — replace src with dp.png URL when hosted -->
+        <div class="profile-float">
+            <!-- If hosting on GitHub Pages, replace below with:
+                 <img src="dp.png" alt="Suryansh Sureka"> -->
+            <div class="profile-placeholder">
+                <span>SS</span>
+                <span>Add dp.png</span>
+            </div>
+        </div>
+
+        <div style="position:absolute; bottom:32px; left:50%; transform:translateX(-50%); animation: pulse 2s infinite;">
+            <i class="fas fa-chevron-down" style="color: var(--muted); font-size: 1.1rem;"></i>
+        </div>
+    </section>
+
+    <!-- ── STATS ── -->
+    <div id="stats">
+        <div class="stats-grid">
+            <div>
+                <span class="stat-val" data-target="3">0</span>
+                <p class="stat-label">Years of Academic Excellence</p>
+            </div>
+            <div>
+                <span class="stat-val" data-target="1">0</span>
+                <p class="stat-label">Research Paper Under Review</p>
+            </div>
+            <div>
+                <span class="stat-val" data-target="6" data-suffix="+">0</span>
+                <p class="stat-label">Months Finance Internship</p>
+            </div>
+            <div>
+                <span class="stat-val" data-target="4" data-suffix="+">0</span>
+                <p class="stat-label">Leadership Roles Held</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── ABOUT ── -->
+    <section id="about">
+        <div class="section-wrap reveal">
+            <div class="section-label"><span>About</span></div>
+            <h2 class="section-title">Turning Data into<br>Business Decisions.</h2>
+            <div class="about-grid">
+                <div class="about-text">
+                    <p>I'm Suryansh Sureka — a <strong>BBA graduate from Christ University Delhi NCR</strong> with a sharp focus on data analytics, business strategy, and AI-driven innovation. I believe the strongest decisions are always backed by the right data.</p>
+                    <p>My internship at <strong>Gallantt Ispat Ltd</strong> gave me hands-on exposure to real-world financial operations — from ERP systems and GST compliance to cost management and inventory reporting at an industrial scale.</p>
+                    <p>I also published a <strong>research paper on AI-driven entrepreneurship regulation</strong>, presented at a national academic conference — combining my interest in emerging technologies with business policy thinking.</p>
+                    <p>Beyond academics, I serve as a <strong>Sports Club office bearer</strong>, volunteer with NGOs, and participate actively in competitions — building the cross-functional skills that define a well-rounded business professional.</p>
+                    <p style="color: var(--accent); font-style: italic;">Currently targeting: Analytics roles, Finance internships &amp; MBA admissions.</p>
+                </div>
+                <div class="about-table">
+                    <div class="about-row"><span class="key">Degree</span><span class="val">BBA — Christ University Delhi NCR</span></div>
+                    <div class="about-row"><span class="key">Focus</span><span class="val">Data Analytics · Strategy · Finance</span></div>
+                    <div class="about-row"><span class="key">Interests</span><span class="val">AI Innovation · Startups · Consulting</span></div>
+                    <div class="about-row"><span class="key">Next Step</span><span class="val">MBA Aspirant · 2025–26</span></div>
+                    <div class="about-row"><span class="key">Open to</span><span class="val">Internships · Research · Collabs</span></div>
+                    <div class="about-row"><span class="key">Location</span><span class="val">Delhi NCR, India</span></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── EXPERIENCE ── -->
+    <section id="experience">
+        <div class="section-wrap">
+            <div class="section-label reveal"><span>Experience</span></div>
+            <h2 class="section-title reveal">Where I've Built<br>Real Skills.</h2>
+
+            <div class="exp-item reveal">
+                <div class="exp-meta">
+                    <span class="exp-type">Internship</span>
+                    <span class="exp-org">Gallantt Ispat Ltd</span>
+                    <span class="exp-period">2024</span>
+                </div>
+                <div>
+                    <h3 class="exp-role">Finance Intern</h3>
+                    <p class="exp-company">Gallantt Ispat Ltd · Manufacturing Sector</p>
+                    <ul class="exp-points">
+                        <li>Worked with ERP systems for real-time financial data management and operational reporting</li>
+                        <li>Supported GST compliance workflows, invoicing processes, and tax documentation</li>
+                        <li>Assisted in cost analysis and budgeting cycles for large-scale manufacturing operations</li>
+                        <li>Managed inventory reconciliation and generated periodic financial performance reports</li>
+                        <li>Gained direct exposure to industrial finance processes at an enterprise scale</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="exp-item reveal">
+                <div class="exp-meta">
+                    <span class="exp-type">Research</span>
+                    <span class="exp-org">Christ University</span>
+                    <span class="exp-period">2023–24</span>
+                </div>
+                <div>
+                    <h3 class="exp-role">Research Author</h3>
+                    <p class="exp-company">AI-Driven Entrepreneurship · Academic Research</p>
+                    <ul class="exp-points">
+                        <li>Authored a research paper on regulatory frameworks for AI-driven entrepreneurship and sustainable innovation</li>
+                        <li>Presented findings at a national-level academic conference</li>
+                        <li>Manuscript currently under peer review for journal publication</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="exp-item reveal">
+                <div class="exp-meta">
+                    <span class="exp-type">Education</span>
+                    <span class="exp-org">Christ University</span>
+                    <span class="exp-period">2021–2024</span>
+                </div>
+                <div>
+                    <h3 class="exp-role">Bachelor of Business Administration</h3>
+                    <p class="exp-company">Christ University Delhi NCR</p>
+                    <ul class="exp-points">
+                        <li>Specialised coursework in Finance, Business Analytics, Strategic Management, and Entrepreneurship</li>
+                        <li>Active participant in case competitions, academic quizzes, and department-level events</li>
+                        <li>Sports Club office bearer — developed leadership and stakeholder management skills</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="exp-item reveal" style="border: 1px dashed var(--border); border-radius: 8px; padding: 20px 24px; margin-top: 8px;">
+                <div class="exp-meta"><span class="exp-type">Status</span></div>
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <p style="font-size: 0.9rem; color: var(--muted); margin: 0;">Actively seeking internship &amp; entry-level opportunities</p>
+                        <p style="font-size: 0.78rem; color: #444; margin: 4px 0 0;">Analytics · Finance · Business Strategy · Consulting</p>
+                    </div>
+                    <span style="font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; color: var(--accent); letter-spacing: 0.1em;">OPEN TO WORK →</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── PROJECTS ── -->
+    <section id="projects">
+        <div class="section-wrap">
+            <div class="section-label reveal"><span>Projects</span></div>
+            <h2 class="section-title reveal">Work That Demonstrates<br>My Thinking.</h2>
+            <div class="projects-grid">
+                <div class="project-card featured reveal">
+                    <div class="project-type">★ Featured · Research</div>
+                    <h3 class="project-title">AI-Driven Entrepreneurship Regulatory Model</h3>
+                    <p class="project-sub">Research Publication · Conference Presentation · Under Review</p>
+                    <p class="project-desc">Developed a novel regulatory framework balancing AI-driven entrepreneurship with sustainability. Presented at national academic conference; manuscript under peer review.</p>
+                    <div class="tags"><span class="tag">AI Regulation</span><span class="tag">Entrepreneurship</span><span class="tag">Policy</span><span class="tag">Innovation</span></div>
+                    <button class="project-btn">View Details →</button>
+                </div>
+                <div class="project-card reveal">
+                    <div class="project-type">Analytics</div>
+                    <h3 class="project-title">Financial Performance Dashboard</h3>
+                    <p class="project-sub">Power BI · Under Development</p>
+                    <p class="project-desc">Multi-dimensional dashboard analysing manufacturing KPIs — inventory turnover, cost variances, and EBITDA trends — using real data from internship exposure.</p>
+                    <div class="tags"><span class="tag">Power BI</span><span class="tag">DAX</span><span class="tag">Finance</span></div>
+                    <button class="project-btn">In Progress →</button>
+                </div>
+                <div class="project-card reveal">
+                    <div class="project-type">Data</div>
+                    <h3 class="project-title">SQL Customer Segmentation</h3>
+                    <p class="project-sub">SQL · PostgreSQL · Upcoming</p>
+                    <p class="project-desc">RFM analysis pipeline on transactional data to segment customers and generate retention strategy recommendations for business stakeholders.</p>
+                    <div class="tags"><span class="tag">SQL</span><span class="tag">RFM Analysis</span><span class="tag">PostgreSQL</span></div>
+                    <button class="project-btn">Upcoming →</button>
+                </div>
+                <div class="project-card reveal">
+                    <div class="project-type">Strategy</div>
+                    <h3 class="project-title">Indian Startup Ecosystem Analysis</h3>
+                    <p class="project-sub">Excel · Research · Upcoming</p>
+                    <p class="project-desc">Sector-wise funding trend mapping, regulatory headwinds, and policy implications for early-stage ventures in the Indian startup landscape.</p>
+                    <div class="tags"><span class="tag">Excel</span><span class="tag">Strategy</span><span class="tag">Startups</span></div>
+                    <button class="project-btn">Upcoming →</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── SKILLS ── -->
+    <section id="skills">
+        <div class="section-wrap">
+            <div class="section-label reveal"><span>Skills</span></div>
+            <h2 class="section-title reveal">Capabilities &amp;<br>Competencies.</h2>
+            <div class="skills-grid">
+                <div class="skill-card reveal">
+                    <div class="skill-card-label">Data Analytics</div>
+                    <div class="skill-item"><div class="skill-item-header"><span class="skill-item-name">Microsoft Excel</span><span class="skill-item-pct">85%</span></div><div class="skill-bar-track"><div class="skill-bar-fill" data-width="85%"></div></div></div>
+                    <div class="skill-item"><div class="skill-item-header"><span class="skill-item-name">Power BI</span><span class="skill-item-pct">70%</span></div><div class="skill-bar-track"><div class="skill-bar-fill" data-width="70%"></div></div></div>
+                    <div class="skill-item"><div class="skill-item-header"><span class="skill-item-name">Tableau</span><span class="skill-item-pct">60%</span></div><div class="skill-bar-track"><div class="skill-bar-fill" data-width="60%"></div></div></div>
+                    <div class="skill-item"><div class="skill-item-header"><span class="skill-item-name">SQL</span><span class="skill-item-pct">65%</span></div><div class="skill-bar-track"><div class="skill-bar-fill" data-width="65%"></div></div></div>
+                </div>
+                <div class="skill-card reveal">
+                    <div class="skill-card-label">Business Tools</div>
+                    <div class="skill-item"><div class="skill-item-header"><span class="skill-item-name">ERP Systems</span><span class="skill-item-pct">75%</span></div><div class="skill-bar-track"><div class="skill-bar-fill" data-width="75%"></div></div></div>
+                    <div class="skill-item"><div class="skill-item-header"><span class="skill-item-name">Financial Modelling</span><span class="skill-item-pct">70%</span></div><div class="skill-bar-track"><div class="skill-bar-fill" data-width="70%"></div></div></div>
+                    <div class="skill-item"><div class="skill-item-header"><span class="skill-item-name">GST & Compliance</span><span class="skill-item-pct">80%</span></div><div class="skill-bar-track"><div class="skill-bar-fill" data-width="80%"></div></div></div>
+                    <div class="skill-item"><div class="skill-item-header"><span class="skill-item-name">MS Office Suite</span><span class="skill-item-pct">90%</span></div><div class="skill-bar-track"><div class="skill-bar-fill" data-width="90%"></div></div></div>
+                </div>
+                <div class="skill-card reveal">
+                    <div class="skill-card-label">Soft Skills</div>
+                    <div class="skill-item"><div class="skill-item-header"><span class="skill-item-name">Communication</span><span class="skill-item-pct">90%</span></div><div class="skill-bar-track"><div class="skill-bar-fill" data-width="90%"></div></div></div>
+                    <div class="skill-item"><div class="skill-item-header"><span class="skill-item-name">Problem Solving</span><span class="skill-item-pct">88%</span></div><div class="skill-bar-track"><div class="skill-bar-fill" data-width="88%"></div></div></div>
+                    <div class="skill-item"><div class="skill-item-header"><span class="skill-item-name">Critical Thinking</span><span class="skill-item-pct">85%</span></div><div class="skill-bar-track"><div class="skill-bar-fill" data-width="85%"></div></div></div>
+                    <div class="skill-item"><div class="skill-item-header"><span class="skill-item-name">Teamwork</span><span class="skill-item-pct">92%</span></div><div class="skill-bar-track"><div class="skill-bar-fill" data-width="92%"></div></div></div>
+                </div>
+                <div class="skill-card reveal">
+                    <div class="skill-card-label">Leadership</div>
+                    <div class="skill-item"><div class="skill-item-header"><span class="skill-item-name">Team Coordination</span><span class="skill-item-pct">85%</span></div><div class="skill-bar-track"><div class="skill-bar-fill" data-width="85%"></div></div></div>
+                    <div class="skill-item"><div class="skill-item-header"><span class="skill-item-name">Event Management</span><span class="skill-item-pct">80%</span></div><div class="skill-bar-track"><div class="skill-bar-fill" data-width="80%"></div></div></div>
+                    <div class="skill-item"><div class="skill-item-header"><span class="skill-item-name">Strategic Planning</span><span class="skill-item-pct">75%</span></div><div class="skill-bar-track"><div class="skill-bar-fill" data-width="75%"></div></div></div>
+                    <div class="skill-item"><div class="skill-item-header"><span class="skill-item-name">Stakeholder Mgmt</span><span class="skill-item-pct">78%</span></div><div class="skill-bar-track"><div class="skill-bar-fill" data-width="78%"></div></div></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── ACHIEVEMENTS ── -->
+    <section id="achievements">
+        <div class="section-wrap">
+            <div class="section-label reveal"><span>Achievements</span></div>
+            <h2 class="section-title reveal">Milestones &amp;<br>Recognition.</h2>
+            <div class="ach-grid">
+                <div class="ach-card reveal"><div class="ach-icon">🏆</div><h3 class="ach-title">Sports Achievement</h3><p class="ach-desc">Represented university in inter-college athletic competitions, demonstrating discipline, resilience, and competitive excellence.</p></div>
+                <div class="ach-card reveal"><div class="ach-icon">🎤</div><h3 class="ach-title">Stage Performances</h3><p class="ach-desc">Public speaking and cultural performances at university events — building confident communication and stage presence.</p></div>
+                <div class="ach-card reveal"><div class="ach-icon">📋</div><h3 class="ach-title">Event Management</h3><p class="ach-desc">Core organiser for departmental and university-level events, managing logistics, teams, and stakeholder coordination.</p></div>
+                <div class="ach-card reveal"><div class="ach-icon">🎓</div><h3 class="ach-title">Academic Competitions</h3><p class="ach-desc">Participated in business case challenges, strategy simulations, and academic quizzes — consistently placing among top performers.</p></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── LEADERSHIP ── -->
+    <section id="leadership">
+        <div class="section-wrap">
+            <div class="section-label reveal"><span>Leadership &amp; Extracurriculars</span></div>
+            <h2 class="section-title reveal">Beyond the Classroom.<br>Building Character.</h2>
+            <div>
+                <div class="lead-item reveal">
+                    <div>
+                        <h3 class="lead-role">Sports Club Office Bearer</h3>
+                        <p class="lead-org">Christ University Delhi NCR</p>
+                        <div class="tags"><span class="tag">Leadership</span><span class="tag">Events</span><span class="tag">Budget</span></div>
+                    </div>
+                    <p class="lead-desc">Leading the university sports club — coordinating inter-college events, managing budgets, building team culture, and representing the institution in competitions. Developed strong stakeholder management and operational execution skills.</p>
+                </div>
+                <div class="lead-item reveal">
+                    <div>
+                        <h3 class="lead-role">NGO Volunteer</h3>
+                        <p class="lead-org">Community Engagement</p>
+                        <div class="tags"><span class="tag">Social Impact</span><span class="tag">Community</span></div>
+                    </div>
+                    <p class="lead-desc">Active contributor to NGO-led community development initiatives — building empathy, communication, and a strong sense of social responsibility alongside professional skills.</p>
+                </div>
+                <div class="lead-item reveal">
+                    <div>
+                        <h3 class="lead-role">Event Organiser</h3>
+                        <p class="lead-org">University Events Team</p>
+                        <div class="tags"><span class="tag">Operations</span><span class="tag">Coordination</span></div>
+                    </div>
+                    <p class="lead-desc">Core team member for departmental and university-level events — managing end-to-end logistics, vendor coordination, stakeholder communication, and on-ground execution at scale.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── CERTIFICATIONS ── -->
+    <section id="certifications">
+        <div class="section-wrap">
+            <div class="section-label reveal"><span>Certifications</span></div>
+            <h2 class="section-title reveal">Learning &amp;<br>Credentials.</h2>
+            <div class="cert-grid reveal">
+                <div class="cert-card"><div class="cert-label">Upcoming</div><div class="cert-name">Google Data Analytics</div></div>
+                <div class="cert-card"><div class="cert-label">Upcoming</div><div class="cert-name">Power BI Fundamentals</div></div>
+                <div class="cert-card"><div class="cert-label">Upcoming</div><div class="cert-name">SQL for Analysts</div></div>
+                <div class="cert-card"><div class="cert-label">Upcoming</div><div class="cert-name">Financial Modelling</div></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── CONTACT ── -->
+    <section id="contact">
+        <div class="section-wrap">
+            <div class="section-label reveal"><span>Contact</span></div>
+            <div class="contact-grid">
+                <div class="contact-info reveal">
+                    <h2 class="section-title" style="margin-bottom: 16px;">Let's Build<br>Something Together.</h2>
+                    <p>Whether you're a recruiter, fellow student, mentor, or potential collaborator — I'd love to connect. I'm open to internships, research collabs, and meaningful conversations about data and business.</p>
+                    <div class="contact-links">
+                        <div class="contact-link-row"><span class="contact-link-key">Email</span><a href="mailto:suryanshsureka@gmail.com" class="contact-link-val">suryanshsureka@gmail.com</a></div>
+                        <div class="contact-link-row"><span class="contact-link-key">LinkedIn</span><a href="https://linkedin.com/in/suryanshsureka" target="_blank" class="contact-link-val">linkedin.com/in/suryanshsureka</a></div>
+                        <div class="contact-link-row"><span class="contact-link-key">Phone</span><a href="tel:+91xxxxxxxxxx" class="contact-link-val">+91 XXXXX XXXXX</a></div>
+                    </div>
+                    <div class="social-row">
+                        <a href="https://linkedin.com/in/suryanshsureka" target="_blank"><i class="fab fa-linkedin"></i></a>
+                        <a href="https://github.com/suryanshsureka" target="_blank"><i class="fab fa-github"></i></a>
+                        <a href="mailto:suryanshsureka@gmail.com"><i class="fas fa-envelope"></i></a>
+                    </div>
+                </div>
+                <div class="reveal">
+                    <div id="contact-form-wrap" class="contact-form">
+                        <input type="text" id="cf-name" placeholder="Your name" />
+                        <input type="email" id="cf-email" placeholder="Email address" />
+                        <textarea id="cf-msg" rows="5" placeholder="Your message..."></textarea>
+                        <button onclick="submitContact()">Send Message</button>
+                    </div>
+                    <div id="sent-state" class="sent-state">
+                        <span class="check">✓</span>
+                        <p>Message sent — I'll be in touch soon.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── FOOTER ── -->
+    <div style="border-top: 1px solid var(--border);">
+        <footer>
+            <span>© 2025 Suryansh Sureka</span>
+            <span>Delhi NCR, India</span>
+        </footer>
+    </div>
+
+    <!-- ── SCRIPTS ── -->
+    <script>
+        // Smooth scroll helper
+        function smoothTo(id) {
+            document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Scroll progress
+        window.addEventListener('scroll', () => {
+            const el = document.documentElement;
+            const pct = (el.scrollTop / (el.scrollHeight - el.clientHeight)) * 100;
+            document.getElementById('scroll-progress').style.width = pct + '%';
+        });
+
+        // Navbar scroll
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('navbar');
+            if (window.scrollY > 40) nav.classList.add('scrolled');
+            else nav.classList.remove('scrolled');
+        });
+
+        // Typing effect
+        const words = ['BBA Graduate.', 'Data Analyst.', 'MBA Aspirant.', 'Business Strategist.'];
+        let wi = 0, ci = 0, del = false;
+        function type() {
+            const word = words[wi % words.length];
+            const el = document.getElementById('typed-text');
+            if (!del) {
+                el.textContent = word.slice(0, ++ci);
+                if (ci === word.length) { del = true; setTimeout(type, 1800); return; }
+            } else {
+                el.textContent = word.slice(0, --ci);
+                if (ci === 0) { del = false; wi++; setTimeout(type, 200); return; }
+            }
+            setTimeout(type, del ? 45 : 90);
+        }
+        type();
+
+        // Animated counters
+        function animateCounter(el) {
+            const target = parseInt(el.dataset.target);
+            const suffix = el.dataset.suffix || '';
+            let count = 0;
+            const step = target / 60;
+            const id = setInterval(() => {
+                count += step;
+                if (count >= target) { el.textContent = target + suffix; clearInterval(id); }
+                else el.textContent = Math.floor(count) + suffix;
+            }, 16);
+        }
+        const statsObs = new IntersectionObserver((entries) => {
+            entries.forEach(e => {
+                if (e.isIntersecting) {
+                    document.querySelectorAll('#stats .stat-val').forEach(animateCounter);
+                    statsObs.disconnect();
+                }
+            });
+        }, { threshold: 0.4 });
+        statsObs.observe(document.getElementById('stats'));
+
+        // Reveal on scroll + skill bars
+        const revealObs = new IntersectionObserver((entries) => {
+            entries.forEach(e => {
+                if (e.isIntersecting) {
+                    e.target.classList.add('active');
+                    e.target.querySelectorAll('.skill-bar-fill').forEach(bar => {
+                        bar.style.width = bar.dataset.width;
+                    });
+                }
+            });
+        }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+        document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
+
+        // Contact form
+        function submitContact() {
+            const n = document.getElementById('cf-name').value.trim();
+            const e = document.getElementById('cf-email').value.trim();
+            const m = document.getElementById('cf-msg').value.trim();
+            if (!n || !e || !m) { alert('Please fill all fields.'); return; }
+            document.getElementById('contact-form-wrap').style.display = 'none';
+            document.getElementById('sent-state').style.display = 'flex';
+        }
+
+        // Three.js — particle network (same vibe as Vipul's)
+        (() => {
+            const container = document.getElementById('canvas-container');
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, innerWidth / innerHeight, 0.1, 1000);
+            camera.position.z = 50;
+            const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+            renderer.setSize(innerWidth, innerHeight);
+            renderer.setPixelRatio(devicePixelRatio);
+            container.appendChild(renderer.domElement);
+
+            const count = 160;
+            const geo = new THREE.BufferGeometry();
+            const pos = new Float32Array(count * 3);
+            for (let i = 0; i < count * 3; i++) pos[i] = (Math.random() - 0.5) * 130;
+            geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+
+            // Gold-tinted particles
+            const points = new THREE.Points(geo, new THREE.PointsMaterial({
+                color: 0xC8A96E, size: 0.6, transparent: true, opacity: 0.7
+            }));
+            scene.add(points);
+
+            const lineMat = new THREE.LineBasicMaterial({ color: 0xa8895a, transparent: true, opacity: 0.1 });
+            const lineGeo = new THREE.BufferGeometry();
+            const lines = new THREE.LineSegments(lineGeo, lineMat);
+            scene.add(lines);
+
+            let mx = 0, my = 0;
+            document.addEventListener('mousemove', e => {
+                mx = (e.clientX - innerWidth / 2);
+                my = (e.clientY - innerHeight / 2);
+            });
+
+            (function animate() {
+                requestAnimationFrame(animate);
+                points.rotation.y += 0.0008;
+                points.rotation.x += 0.0004;
+                points.rotation.y += 0.04 * (mx * 0.001 - points.rotation.y) * 0.1;
+                points.rotation.x += 0.04 * (my * 0.001 - points.rotation.x) * 0.1;
+
+                // Connect nearby particles
+                const p = pos, lp = [];
+                const d = 14;
+                for (let i = 0; i < count; i++) {
+                    for (let j = i + 1; j < count; j++) {
+                        const dx = p[i*3]-p[j*3], dy = p[i*3+1]-p[j*3+1], dz = p[i*3+2]-p[j*3+2];
+                        if (Math.sqrt(dx*dx+dy*dy+dz*dz) < d) {
+                            lp.push(p[i*3],p[i*3+1],p[i*3+2],p[j*3],p[j*3+1],p[j*3+2]);
+                        }
+                    }
+                }
+                lineGeo.setAttribute('position', new THREE.Float32BufferAttribute(lp, 3));
+                renderer.render(scene, camera);
+            })();
+
+            window.addEventListener('resize', () => {
+                camera.aspect = innerWidth / innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(innerWidth, innerHeight);
+            });
+        })();
+    </script>
+</body>
+</html>
